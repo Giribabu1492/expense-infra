@@ -34,6 +34,7 @@ pipeline {
             cd 00-vpc
             terraform init
             terraform apply -auto-approve
+            terraform destroy -auto-approve
             '''
         }
     }
