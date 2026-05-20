@@ -25,20 +25,18 @@ pipeline {
             }
         }
 
-        stage('Apply') {
-            input {
-                message "Do you want to apply the changes to the infrastructure?"
-                ok "Apply"
-            }
-            steps {
-
-                  withAWS(region: 'us-east-1', credentials: 'aws-creds')
-                sh '''
-                    cd 00-vpc
-                    terraform apply -auto-approve
-                '''
-            }
+        stage('Terraform Apply') {
+         steps {
+            
+        withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+            sh '''
+            cd 00-vpc
+            terraform init
+            terraform apply -auto-approve
+            '''
         }
+    }
+}
 
         stage('Deploy') {
             when {
