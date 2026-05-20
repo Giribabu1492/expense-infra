@@ -25,12 +25,15 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Apply') {
+            input {
+                message "Do you want to apply the changes to the infrastructure?"
+                ok "Apply"
+            }
             steps {
                 sh '''
-                    echo "hello this is test"
-                    # echo "This is Project related information: ${PROJECT}"
-                    # echo "This is Component related information: ${COMPONENT}"
+                    cd 00-vpc
+                    terraform apply -auto-approve
                 '''
             }
         }
