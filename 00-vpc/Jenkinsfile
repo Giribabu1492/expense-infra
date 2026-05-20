@@ -1,0 +1,63 @@
+pipeline {
+    agent { label 'AGENT-1' }
+
+    environment {
+        PROJECT = "expense"
+        COMPONENT = "backend"
+        DEPLOY_ENV = "qa"
+    }
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Init') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    sh '''
+                        cd 00-vpc
+                        terraform init -reconfigure
+                        terraform plan
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                    echo "hello this is test"
+                    # echo "This is Project related information: ${PROJECT}"
+                    # echo "This is Component related information: ${COMPONENT}"
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                environment name: 'DEPLOY_ENV', value: 'qa'
+            }
+            steps {
+                sh '''
+                    echo "hello this is deploy successfully"
+                    echo "Deploying to environment: $DEPLOY_ENV"
+                '''
+            }
+        }
+    }
+
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+            deleteDir()
+        }
+        failure { 
+            echo 'I will run when pipeline fails'
+        }
+        success { 
+            echo 'I will run when pipeline succeeds'
+        }
+    }
+}
