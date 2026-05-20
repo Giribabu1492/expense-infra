@@ -10,6 +10,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         timeout(time: 30, unit: 'MINUTES')
+        asciiColor('xterm')
     }
 
     stages {
@@ -27,7 +28,7 @@ pipeline {
 
         stage('Terraform Apply') {
          steps {
-            
+
         withAWS(region: 'us-east-1', credentials: 'aws-creds') {
             sh '''
             cd 00-vpc
