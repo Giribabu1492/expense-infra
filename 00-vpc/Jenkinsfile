@@ -1,73 +1,59 @@
 pipeline {
     agent { label 'AGENT-1' }
-
-    environment {
-        PROJECT = "expense"
-        COMPONENT = "backend"
-        DEPLOY_ENV = "qa"
+    environment { 
+        PROJECT = 'EXPENSE'
+        COMPONENT = 'BACKEND' 
+        DEPLOY_TO = "production"
     }
-
     options {
         disableConcurrentBuilds()
         timeout(time: 30, unit: 'MINUTES')
         ansiColor('xterm')
     }
- parameters{
+    parameters{
         choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Pick something')
     }
-
-
     stages {
         stage('Init') {
             steps {
+               script{
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
-                    sh '''
+                    sh """
                         cd 00-vpc
                         terraform init -reconfigure
                         terraform plan
-                    '''
+                    """
                 }
+                 
+               }
             }
         }
-
-    
-
-      
-
-        stage('Terraform Apply') {
+        stage('Apply') {
             input {
-                message "Do you want to apply the Terraform changes?"
-                ok "Apply"
+                message "Should we continue?"
+                ok "Yes, we should."
             }
-         steps {
-
-        withAWS(region: 'us-east-1', credentials: 'aws-creds') {
-            sh '''
-            cd 00-vpc
-            terraform init
-            terraform apply -auto-approve
-           
-            '''
+            steps {
+               script{
+                withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    sh """
+                        cd 00-vpc
+                        terraform apply -auto-approve
+                    """
+                }
+                 
+               }
+            }
+        }
+        stage('Trigger SG'){
+            when { 
+                expression { params.ACTION == 'apply'}
+            }
+            steps{
+                build job: '10-sg', parameters: [string(name: 'ACTION', value: 'apply')], propagate: true
             }
         }
     }
-
-
-     stage('Trigger SG') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps{
-            build job: '10-sg', parameters: [string(name: 'ACTION', value: 'apply')], propagate: true
-  
-                }
-                
-        }
-
-
-    } 
-
-
     post { 
         always { 
             echo 'I will always say Hello again!'
@@ -79,12 +65,5 @@ pipeline {
         success { 
             echo 'I will run when pipeline is success'
         }
-    } 
-
+    }
 }
-
-
-
-
-
-
