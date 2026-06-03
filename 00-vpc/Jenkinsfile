@@ -30,19 +30,21 @@ pipeline {
 
 }        
 
-//         stage('Terraform Apply') {
-//          steps {
+        stage('Terraform Apply') {
+         steps {
 
-//         withAWS(region: 'us-east-1', credentials: 'aws-creds') {
-//             sh '''
-//             cd 00-vpc
-//             terraform init
-//             terraform apply -auto-approve
+        withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+            sh '''
+            cd 00-vpc
+            terraform init
+            terraform apply -auto-approve
            
-//             '''
-//         }
-//     }
-// }
+            '''
+        }
+    }
+}
+
+
 
 //         stage('Deploy') {
 //             when {
