@@ -13,6 +13,9 @@ pipeline {
         ansiColor('xterm')
     }
 
+parameters{
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Pick something')
+    }
     stages {
         stage('Init') {
             steps {
@@ -24,11 +27,21 @@ pipeline {
                     '''
                 }
             }
+
+
+
+           
         }
 
     
+}
 
+}
       
+
+
+
+
 
     //     stage('Terraform Apply') {
     //         input {
@@ -47,8 +60,8 @@ pipeline {
     //         }
     //     }
     // }
-}
-}  
+
+  
 
 
 
