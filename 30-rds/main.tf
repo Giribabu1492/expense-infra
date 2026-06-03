@@ -1,17 +1,17 @@
 module "db" {
-  source = "terraform-aws-modules/rds/aws"
+  source     = "terraform-aws-modules/rds/aws"
   identifier = local.resource_name #expense-dev
 
   engine            = "mysql"
-  engine_version    = "8.0.40"
+  engine_version    = "8.0.46"
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
 
- db_name  = "transactions" # AWS will create this schema automatically
-  username = "root"
-  port     = "3306"
-  password_wo            = "ExpenseApp1"
-  password_wo_version    = 1
+  db_name                     = "transactions" # AWS will create this schema automatically
+  username                    = "root"
+  port                        = "3306"
+  password_wo                 = "ExpenseApp1"
+  password_wo_version         = 1
   manage_master_user_password = false
 
 
@@ -19,7 +19,7 @@ module "db" {
 
   # DB subnet group
   create_db_subnet_group = false
-  db_subnet_group_name = local.database_subnet_group_name
+  db_subnet_group_name   = local.database_subnet_group_name
 
   # DB parameter group
   family = "mysql8.0"
@@ -59,11 +59,11 @@ module "db" {
     },
   ]
 
-  tags = merge( 
-    
+  tags = merge(
+
     var.common_tags,
     {
-        Name = local.resource_name
+      Name = local.resource_name
     }
   )
 }
