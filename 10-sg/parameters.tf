@@ -40,3 +40,19 @@ resource "aws_ssm_parameter" "web_alb_sg_id" {
   type  = "String"
   value = module.web_alb_sg.sg_id
 }
+
+
+
+resource "aws_ssm_parameter" "eks_control_plane_sg_id" {
+  name      = "/expense/dev/eks_control_plane_sg_id"
+  type      = "String"
+  value     = aws_security_group.eks_control_plane.id
+  overwrite = true
+}
+
+resource "aws_ssm_parameter" "eks_node_sg_id" {
+  name      = "/expense/dev/eks_node_sg_id"
+  type      = "String"
+  value     = aws_security_group.eks_node.id
+  overwrite = true
+}

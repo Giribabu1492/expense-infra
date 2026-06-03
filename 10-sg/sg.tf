@@ -254,3 +254,4 @@ resource "aws_security_group_rule" "frontend_public_inbound" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.frontend_sg.sg_id
 }
+
