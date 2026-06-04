@@ -37,7 +37,7 @@ module "eks" {
 
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
-    instance_types = ["t3.micro"]
+    instance_types = ["t3.small"]
   }
 
   eks_managed_node_groups = {
@@ -60,7 +60,7 @@ module "eks" {
     green = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       #ami_type       = "AL2_x86_64"
-      instance_types = ["t3.micro"]
+      instance_types = ["t3.small"]
       key_name       = aws_key_pair.eks.key_name
 
       min_size     = 2
