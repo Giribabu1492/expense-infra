@@ -1,8 +1,6 @@
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCYckUq2Y+yvoQwNsbm4/eM0gWBncsHEAImi/GQoOn5JyThwNzqdALgrIjNL0Vh2+j7Q4xuQ2uy1leLW4nNDif0DVWm+XcFAo9h+YzP7NqZuEuzo5U8gCk9cMyiyz4vzYajgO9BYInQ0UB0dRNY0Rf+nTiicBtxZ7FvoPSscLuermOGkMrPyc2Fh8Xpgxa3cnMmflTU50nVy7nKyTciM0cckrneUmdi8DIKhg773MXP+RTpA/l3x+IRyPoGCWY4rehv/eFmci0M5JW9xhRhRpFVL21nRWa5ck54IkqW49UBAmQhFTNwikJi01GWfKCb8vae3o5PIMdkfkWzzCEI0sATq9DvNpFrNy9Pi8klP6r3AZrulPQOE1oylVQDBjWkWQZewGm35v3u/80ssxhCGCrfTMHDLw8NX57uJQTpQMVFw3UrYVjPYSQN1hZ9eN+OvE3sTQRV2rXgUlQthopMk8GM3M167tAZzwBITyC+qxs+QmGC6cJ7jBu0i+LQyL3rxSskY4yQyMDo++r+eclk6lSQAgh3fbTxDuZOE11F4KNdKmr8v7qj8Wi9AUCyo0BsQX/a5Fd8m4rU5rArIS9MDyBSvisFCmBkj80rY/QRJoFzy0mFwCRnZdmfb0Bycz1c13AQOPBehfjuJ40HIlII3GfcO+uhKvBH8Z9PtVQh2jE3KQ== jinagagiribabu123@gmail.com"
-
-
 }
 
 module "eks" {
@@ -26,7 +24,8 @@ module "eks" {
   }
 
   # Optional
-  cluster_endpoint_public_access = false
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
 
   # Optional: Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
