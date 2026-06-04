@@ -1,257 +1,182 @@
 module "mysql_sg" {
-
-  #source = "../aws-SG-module"
   source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
   project_name   = var.project_name
   environment    = var.environment
   sg_name        = "mysql"
-  sg_description = "security group for mysql servers"
+  sg_description = "Created for MySQL instances in expense dev"
   vpc_id         = data.aws_ssm_parameter.vpc_id.value
   common_tags    = var.common_tags
 }
 
-module "backend_sg" {
-  #source = "../aws-SG-module"
-  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
-  project_name   = var.project_name
-  environment    = var.environment
-  sg_name        = "backend"
-  sg_description = "security group for backend servers"
-  vpc_id         = data.aws_ssm_parameter.vpc_id.value
-  common_tags    = var.common_tags
-}
 
-module "frontend_sg" {
-  #source = "../aws-SG-module"
-  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
-  project_name   = var.project_name
-  environment    = var.environment
-  sg_name        = "frontend"
-  sg_description = "security group for frontend servers"
-  vpc_id         = data.aws_ssm_parameter.vpc_id.value
-  common_tags    = var.common_tags
-}
 
-module "bastion" {
-  #source = "../aws-SG-module"
+module "bastion_sg" {
   source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
   project_name   = var.project_name
   environment    = var.environment
   sg_name        = "bastion"
-  sg_description = "security group for bastion servers"
+  sg_description = "Created for bastion instances in expense dev"
   vpc_id         = data.aws_ssm_parameter.vpc_id.value
   common_tags    = var.common_tags
 }
 
-module "app_alb_sg" {
-  #source = "../aws-SG-module"
-  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
-  project_name   = var.project_name
-  environment    = var.environment
-  sg_name        = "app-alb"
-  sg_description = "security group for app-alb servers"
-  vpc_id         = data.aws_ssm_parameter.vpc_id.value
-  common_tags    = var.common_tags
-}
-
-
-
-
-module "web_alb_sg" {
-  #source = "../aws-SG-module"
-  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
-  project_name   = var.project_name
-  environment    = var.environment
-  sg_name        = "web-alb"
-  sg_description = "security group for web-alb servers"
-  vpc_id         = data.aws_ssm_parameter.vpc_id.value
-  common_tags    = var.common_tags
-}
-
-
-
-#accept traffic from bastion to app-alb on port 80
-resource "aws_security_group_rule" "app_alb_bastion_inbound" {
-  type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
-  protocol                 = "tcp"
-  source_security_group_id = module.bastion.sg_id
-  security_group_id        = module.app_alb_sg.sg_id
-}
-
-resource "aws_security_group_rule" "bastion_public_inbound" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"] #replace with your ip
-  security_group_id = module.bastion.sg_id
-
-}
-
-
+# ports 22, 443, 1194, 943 --> VPN ports
 module "vpn_sg" {
-  #source = "../aws-SG-module"
   source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
   project_name   = var.project_name
   environment    = var.environment
   sg_name        = "vpn"
-  sg_description = "security group for vpn servers"
+  sg_description = "Created for VPN instances in expense dev"
   vpc_id         = data.aws_ssm_parameter.vpc_id.value
   common_tags    = var.common_tags
 }
 
-
-
-
-resource "aws_security_group_rule" "vpn_public" {
-  type      = "ingress"
-  from_port = 22
-  to_port   = 22
-  protocol  = "tcp"
-  #it should be static ip
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn_sg.sg_id
+module "alb_ingress_sg" {
+  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
+  project_name   = var.project_name
+  environment    = var.environment
+  sg_name        = "app-alb"
+  sg_description = "Created for backend ALB in expense dev"
+  vpc_id         = data.aws_ssm_parameter.vpc_id.value
+  common_tags    = var.common_tags
 }
 
-resource "aws_security_group_rule" "vpn_443" {
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-  #it should be static ip
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn_sg.sg_id
+module "eks_control_plane_sg" {
+  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
+  project_name   = var.project_name
+  environment    = var.environment
+  sg_name        = "eks-control-plane"
+  sg_description = "Created for backend ALB in expense dev"
+  vpc_id         = data.aws_ssm_parameter.vpc_id.value
+  common_tags    = var.common_tags
 }
 
-resource "aws_security_group_rule" "vpn_943" {
-  type      = "ingress"
-  from_port = 943
-  to_port   = 943
-  protocol  = "tcp"
-  #it should be static ip
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn_sg.sg_id
+module "eks_node_sg" {
+  source         = "git::https://github.com/Giribabu1492/aws-sg-module.git?ref=main"
+  project_name   = var.project_name
+  environment    = var.environment
+  sg_name        = "eks-node"
+  sg_description = "Created for backend ALB in expense dev"
+  vpc_id         = data.aws_ssm_parameter.vpc_id.value
+  common_tags    = var.common_tags
 }
 
-resource "aws_security_group_rule" "vpn_1194" {
-  type      = "ingress"
-  from_port = 1194
-  to_port   = 1194
-  protocol  = "tcp"
-  #it should be static ip
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.vpn_sg.sg_id
-}
-
-resource "aws_security_group_rule" "app_alb_vpn_inbound" {
+resource "aws_security_group_rule" "eks_control_plane_node" {
   type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
-  protocol                 = "tcp"
-  source_security_group_id = module.vpn_sg.sg_id
-  security_group_id        = module.app_alb_sg.sg_id
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = module.eks_node_sg.sg_id
+  security_group_id        = module.eks_control_plane_sg.sg_id
 }
 
-resource "aws_security_group_rule" "mysql_bastion_inbound" {
+resource "aws_security_group_rule" "eks_node_eks_control_plane" {
   type                     = "ingress"
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  source_security_group_id = module.bastion.sg_id
-  security_group_id        = module.mysql_sg.sg_id
-
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = module.eks_control_plane_sg.sg_id
+  security_group_id        = module.eks_node_sg.sg_id
 }
 
-resource "aws_security_group_rule" "mysql_vpn_inbound" {
-  type                     = "ingress"
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  source_security_group_id = module.vpn_sg.sg_id
-  security_group_id        = module.mysql_sg.sg_id
+# resource "aws_security_group_rule" "node_alb_ingress" {
+#   type              = "ingress"
+#   from_port         = 30000
+#   to_port           = 32767
+#   protocol          = "tcp"
+#   source_security_group_id       = module.alb_ingress_sg.sg_id
+#   security_group_id = module.eks_node_sg.sg_id
+# }
 
+resource "aws_security_group_rule" "node_vpc" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"            #this is huge mistake, if value is tcp, DNS will work in EKS. UDP traffic is required. So make it All traffic
+  cidr_blocks       = ["10.0.0.0/16"] # our private IP address range
+  security_group_id = module.eks_node_sg.sg_id
 }
 
-
-
-
-resource "aws_security_group_rule" "backend_vpn_ssh_inbound" {
+resource "aws_security_group_rule" "node_bastion" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22
   protocol                 = "tcp"
-  source_security_group_id = module.vpn_sg.sg_id
-  security_group_id        = module.backend_sg.sg_id
-
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.eks_node_sg.sg_id
 }
 
-resource "aws_security_group_rule" "backend_vpn_http_inbound" {
+# APP ALB accepting traffic from bastion
+resource "aws_security_group_rule" "alb_ingress_bastion" {
   type                     = "ingress"
-  from_port                = 8080
-  to_port                  = 8080
+  from_port                = 80
+  to_port                  = 80
   protocol                 = "tcp"
-  source_security_group_id = module.vpn_sg.sg_id
-  security_group_id        = module.backend_sg.sg_id
-
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.alb_ingress_sg.sg_id
 }
 
-
-resource "aws_security_group_rule" "backend_app_alb_inbound" {
+resource "aws_security_group_rule" "alb_ingress_bastion_https" {
   type                     = "ingress"
-  from_port                = 8080
-  to_port                  = 8080
+  from_port                = 443
+  to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = module.app_alb_sg.sg_id
-  security_group_id        = module.backend_sg.sg_id
-
-}
-resource "aws_security_group_rule" "mysql_backend_inbound" {
-  type                     = "ingress"
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  source_security_group_id = module.backend_sg.sg_id
-  security_group_id        = module.mysql_sg.sg_id
-
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.alb_ingress_sg.sg_id
 }
 
-resource "aws_security_group_rule" "web_alb_443" {
+resource "aws_security_group_rule" "alb_ingress_public_https" {
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.web_alb_sg.sg_id
+  security_group_id = module.alb_ingress_sg.sg_id
 }
 
-resource "aws_security_group_rule" "app_alb_frontend_inbound" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.web_alb_sg.sg_id
-}
-
-
-resource "aws_security_group_rule" "frontend_web_alb_inbound" {
-  type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
-  protocol                 = "tcp"
-  source_security_group_id = module.web_alb_sg.sg_id
-  security_group_id        = module.frontend_sg.sg_id
-}
-
-# usually you should configure frontend using private ip from VPN only
-resource "aws_security_group_rule" "frontend_public_inbound" {
+# JDOPS-32, Bastion host should be accessed from office n/w
+resource "aws_security_group_rule" "bastion_public" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = module.frontend_sg.sg_id
+  security_group_id = module.bastion_sg.sg_id
 }
 
+
+resource "aws_security_group_rule" "mysql_bastion" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.mysql_sg.sg_id
+}
+
+resource "aws_security_group_rule" "mysql_eks_node" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  source_security_group_id = module.eks_node_sg.sg_id
+  security_group_id        = module.mysql_sg.sg_id
+}
+
+resource "aws_security_group_rule" "eks_control_plane_bastion" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.eks_control_plane_sg.sg_id
+}
+
+resource "aws_security_group_rule" "eks_node_alb_ingress" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.alb_ingress_sg.sg_id
+  security_group_id        = module.eks_node_sg.sg_id
+}
