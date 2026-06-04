@@ -1,6 +1,8 @@
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAwrcfiQKv9v5spMRPVt0KiP+1LL2F10v3KfOC0P/9GchUoYQIeUVBSCMYBbcQdXp0dueCvo0/Jnu8VoPY6JNxjMp8KPcFPSD820/byrLX+nZSvBUyob+VjTVzaCn7B0bDNGszOfwMN9muq/CTMcMxQOIJ4jFecOgt7SgZbbNh7g6/2q5SJOuFiWZkqgsxvbAytVA3/FL0v5UU+Ba7Kh1Ugu1skQNDClvpZg+NzHHQNP6E4EWAtZSQUflPS83qtvJPF6cXj9bFb7h5kG+i2qWsB6+iujC+964XWImGr8ftVOpe6JWxRcg+C++bTJgz4sdWxCBbo/KtpzjLzVtvOpAI10V9Y+KGkPQuEVYty9Wk1HzLb13TS+iWbXXdrW0eadFl5nGsyrvE1Yen+Tae7J6ayRmjrfYw6Dio1rAmTW1Sms+Df4cESzpVsjEALfoqJmNxDJy6SLpZXQiNXhdeIAxkotnedo0fEHbsx15nx/0EJT9bHCfyh/l6g+l+4O2mjOE= user@AshDexter-T480"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyCjCUtvcODNAmjLVpY64dp8tQBhJw8US8gAzx7laeEB4DvNV9o4hezOy2qIxawER1J3x3zZuTT7LC1TT4zhN3eQEj8IdyBy5ot0JCDKmZJ8p8RtIuaVN2fDIfaizm1xuVVh8aq3g41ioH1iu8qTCZhbGTbtSFxiDDVIsR9w4jh23FbeP8CblMwgIlAgUIAZIaEablHJZAxcWc9S / v4E + Sl9nxE / mP1pJBCyQBsytkGYkG0RFRAgFAhku3jnnMaOk7mUAZoHkoKnnTRrAQWT2ZTzchHZDTeg + pZfKpS1NRhGVYhq7YDTIIGKppLakmvstpcBtGcJimKvliV6KOCfU + cfvhEhJuAesh854ZFFtS6BhgbTwe4fept6Rh / z8LRdZcSfvhoF81tMfidQ407iW + YoOj3RtRX / ceArI2o / q7 //AYN+ZhEDtIHkmLYmuVkg9TrQQ7fADDEoSlyM9OXye/gyAvlI5D582z08OaZ8xYBdSZebCnkhUQBygU9rKQQsxR2VTLPlQfqRcHNe3j93kwgUBrlmr9ZoOuH8VIaR81mWZXWl885XtTpbY7ul9Xr3n9YEEi6Qehg+5dbv4gQ+fgnjPklVzYQZe5MbG1qHFUqebNBO+eymTD++g7C+RuLPNK8YmuV7+md8rmRyLNZktYeQdigsdZLx4afZsJ5GKxw== jinagagiribabu@gmail.com"
+
+
 }
 
 module "eks" {
@@ -71,19 +73,6 @@ module "eks" {
       }
     }
   }
-  resource "aws_ssm_parameter" "eks_control_plane_sg_id" {
-    name      = "/expense/dev/eks_control_plane_sg_id"
-    type      = "String"
-    value     = aws_security_group.eks_control_plane.id
-    overwrite = true
-  }
-
-  resource "aws_ssm_parameter" "eks_node_sg_id" {
-    name      = "/expense/dev/eks_node_sg_id"
-    type      = "String"
-    value     = aws_security_group.eks_node.id
-    overwrite = true
-  }
 
   tags = merge(
     var.common_tags,
@@ -91,6 +80,4 @@ module "eks" {
       Name = local.name
     }
   )
-
-
 }
