@@ -1,6 +1,6 @@
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyCjCUtvcODNAmjLVpY64dp8tQBhJw8US8gAzx7laeEB4DvNV9o4hezOy2qIxawER1J3x3zZuTT7LC1TT4zhN3eQEj8IdyBy5ot0JCDKmZJ8p8RtIuaVN2fDIfaizm1xuVVh8aq3g41ioH1iu8qTCZhbGTbtSFxiDDVIsR9w4jh23FbeP8CblMwgIlAgUIAZIaEablHJZAxcWc9S / v4E + Sl9nxE / mP1pJBCyQBsytkGYkG0RFRAgFAhku3jnnMaOk7mUAZoHkoKnnTRrAQWT2ZTzchHZDTeg + pZfKpS1NRhGVYhq7YDTIIGKppLakmvstpcBtGcJimKvliV6KOCfU + cfvhEhJuAesh854ZFFtS6BhgbTwe4fept6Rh / z8LRdZcSfvhoF81tMfidQ407iW + YoOj3RtRX / ceArI2o / q7 //AYN+ZhEDtIHkmLYmuVkg9TrQQ7fADDEoSlyM9OXye/gyAvlI5D582z08OaZ8xYBdSZebCnkhUQBygU9rKQQsxR2VTLPlQfqRcHNe3j93kwgUBrlmr9ZoOuH8VIaR81mWZXWl885XtTpbY7ul9Xr3n9YEEi6Qehg+5dbv4gQ+fgnjPklVzYQZe5MbG1qHFUqebNBO+eymTD++g7C+RuLPNK8YmuV7+md8rmRyLNZktYeQdigsdZLx4afZsJ5GKxw== jinagagiribabu@gmail.com"
+  public_key = file("/home/ec2-user/.ssh/id_rsa.pub")
 
 
 }
