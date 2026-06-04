@@ -1,24 +1,24 @@
 variable "project_name" {
-    default = "expense"
+  default = "expense"
 }
 
 variable "environment" {
-    default = "dev"
+  default = "dev"
 }
 
 variable "common_tags" {
-    default = {
-        Project = "expense"
-        Environment = "dev"
-        Terraform = "true"
-    }
+  default = {
+    Project     = "expense"
+    Environment = "dev"
+    Terraform   = "true"
+  }
 }
 
 
 variable "zone_id" {
-    default = "Z021448929NMXW4P65UQE"
+  default = "Z00389572HRJTNJ3RVKCP"
 }
 
 variable "domain_name" {
-    default = "daws82s.online"
+  default = "shrihan.online"
 }
