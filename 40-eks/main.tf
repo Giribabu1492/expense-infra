@@ -7,12 +7,12 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = local.name
-  cluster_version = "1.32" # later we upgrade 1.32
-  create_node_security_group = false
+  cluster_name                  = local.name
+  cluster_version               = "1.32" # later we upgrade 1.32
+  create_node_security_group    = false
   create_cluster_security_group = false
-  cluster_security_group_id = local.eks_control_plane_sg_id
-  node_security_group_id = local.eks_node_sg_id
+  cluster_security_group_id     = local.eks_control_plane_sg_id
+  node_security_group_id        = local.eks_node_sg_id
 
   #bootstrap_self_managed_addons = false
   cluster_addons = {
@@ -20,7 +20,7 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-    metrics-server = {}
+    metrics-server         = {}
   }
 
   # Optional
@@ -59,23 +59,38 @@ module "eks" {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       #ami_type       = "AL2_x86_64"
       instance_types = ["m5.xlarge"]
-      key_name = aws_key_pair.eks.key_name
+      key_name       = aws_key_pair.eks.key_name
 
       min_size     = 2
       max_size     = 10
       desired_size = 2
       iam_role_additional_policies = {
-        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-        AmazonEFSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+        AmazonEBSCSIDriverPolicy     = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+        AmazonEFSCSIDriverPolicy     = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
         AmazonEKSLoadBalancingPolicy = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
       }
     }
+  }
+  resource "aws_ssm_parameter" "eks_control_plane_sg_id" {
+    name      = "/expense/dev/eks_control_plane_sg_id"
+    type      = "String"
+    value     = aws_security_group.eks_control_plane.id
+    overwrite = true
+  }
+
+  resource "aws_ssm_parameter" "eks_node_sg_id" {
+    name      = "/expense/dev/eks_node_sg_id"
+    type      = "String"
+    value     = aws_security_group.eks_node.id
+    overwrite = true
   }
 
   tags = merge(
     var.common_tags,
     {
-        Name = local.name
+      Name = local.name
     }
   )
+
+
 }
