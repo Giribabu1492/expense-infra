@@ -20,9 +20,9 @@ pipeline {
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
                         cd 30-rds
-                         terraform destroy -auto-approve
-                        //terraform init -reconfigure
-                        //terraform plan
+        
+                        terraform init -reconfigure
+                        terraform plan
                     """
                 }
                  
@@ -38,8 +38,9 @@ pipeline {
                script{
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
-                       // cd 30-rds
-                        //terraform apply -auto-approve
+                        cd 30-rds
+                        terraform apply -auto-approve
+                        terraform destroy -auto-approve
                     """
                 }
                  
