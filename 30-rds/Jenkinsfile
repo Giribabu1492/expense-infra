@@ -40,7 +40,7 @@ pipeline {
                     sh """
                         cd 30-rds
                         terraform apply -auto-approve
-                        terraform destroy -auto-approve
+                        
                     """
                 }
                  
