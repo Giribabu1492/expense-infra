@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "expense-dev-infra-shrihan"
+    bucket         = "expense-dev-infra-girisha"
     key            = "expense-dev-ingress-alb"
     region         = "us-east-1"
     dynamodb_table = "giri-bucket-lock"
